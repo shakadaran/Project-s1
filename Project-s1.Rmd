@@ -30,6 +30,7 @@ library(tidyr)
 df %>%
    group_by(ANO_CONCESSAO_BOLSA,SEXO_BENEFICIARIO_BOLSA)%>%
   summarize(n())
+genderdata= df %>% mutate(SEXO_BENEFICIARIO_BOLSA = ifelse(SEXO_BENEFICIARIO_BOLSA=="M", "Male", "Female")) %>% group_by(date=ANO_CONCESSAO_BOLSA, SEXO_BENEFICIARIO_BOLSA) %>% tally %>% spread(SEXO_BENEFICIARIO_BOLSA, n)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
@@ -42,10 +43,11 @@ library(xts) # To make the convertion data-frame / xts format
 
 
 # Then you can create the xts format:
-don=xts( x=df[,-1], order.by=as.Date(as.yearmon(df$ANO_CONCESSAO_BOLSA)))
+don=xts( x=genderdata[,-1], order.by=as.Date(as.yearmon(genderdata$date)))
 
 # Chart
 p <- dygraph(don)
+p%>%dyAxis("x", drawGrid = TRUE)
 p
 
 ```
