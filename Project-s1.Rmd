@@ -9,14 +9,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Data  from PROUNI
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see 
 
 ```{r cars}
-summary(cars)
+df<-read.csv("data/prouni_2005_2019.csv")
 ```
 
 ## Including Plots
@@ -24,7 +22,30 @@ summary(cars)
 You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
-plot(pressure)
+head(df)
+
+
+library(dplyr)
+library(tidyr)
+df %>%
+   group_by(ANO_CONCESSAO_BOLSA,SEXO_BENEFICIARIO_BOLSA)%>%
+  summarize(n())
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+library(dygraphs)
+library(xts) # To make the convertion data-frame / xts format
+
+# Format 3: Several variables for each date
+
+
+
+# Then you can create the xts format:
+don=xts( x=df[,-1], order.by=as.Date(as.yearmon(df$ANO_CONCESSAO_BOLSA)))
+
+# Chart
+p <- dygraph(don)
+p
+
+```
